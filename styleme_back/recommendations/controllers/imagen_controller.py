@@ -1,59 +1,48 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from recommendations.ia.detector import detect_clothing_items
-from recommendations.entity.user import Usuario
-from recommendations.entity.clothing import Prenda
-import os
-import json
+from recommendations.services.imagen_service import ImagenService
+
+
+# Instancia del servicio
+imagen_service = ImagenService()
+
 
 @csrf_exempt
 def detect_clothing_view(request):
     """
     Vista que recibe una imagen y un correo. Detecta prendas con YOLO y guarda en el guardarropa del usuario.
     """
-
     if request.method == 'POST':
-        image = request.FILES.get('image')
-        email = request.POST.get('email')  # Asegúrate que el frontend envíe el email como form-data
-
-        if not image or not email:
-            return JsonResponse({'error': 'Faltan datos: imagen o email'}, status=400)
-
-        # Buscar el usuario en la base de datos
-        user = Usuario.objects(correo=email).first()
-        if not user:
-            return JsonResponse({'error': 'Usuario no encontrado'}, status=404)
-
-        # Guardar imagen
-        os.makedirs('recommendations/media', exist_ok=True)
-        image_path = os.path.join('recommendations', 'media', image.name)
-        with open(image_path, 'wb+') as destination:
-            for chunk in image.chunks():
-                destination.write(chunk)
-
         try:
-            # Detectar prendas con YOLO
-            detections = detect_clothing_items(image_path)
+            # Obtener datos de la solicitud
+            image = request.FILES.get('image')
+            email = request.POST.get('email')
 
-            nuevas_prendas = []
-            for det in detections:
-                prenda = Prenda(
-                    tipo=det['tipo'],
-                    color="desconocido",     # puedes mejorarlo más adelante
-                    temporada="desconocido"  # idem
-                )
-                nuevas_prendas.append(prenda)
+            # Validación básica
+            if not image or not email:
+                return JsonResponse({'error': 'Faltan datos: imagen o email'}, status=400)
 
-            # Guardar en el guardarropa del usuario
-            user.guardarropa.extend(nuevas_prendas)
-            user.save()
+            # Validar que sea una imagen válida
+            if not imagen_service.validate_image(image):
+                return JsonResponse({'error': 'Formato de imagen no válido'}, status=400)
 
+            # Llamar al servicio para detectar y guardar prendas
+            prendas_detectadas = imagen_service.detect_and_save_clothing(
+                email=email,
+                image_file=image,
+                image_name=image.name
+            )
+
+            # Construir respuesta
             return JsonResponse({
-                'message': 'Prendas detectadas y guardadas',
-                'prendas': [p.to_mongo().to_dict() for p in nuevas_prendas]
-            })
+                'message': 'Prendas detectadas y guardadas exitosamente',
+                'cantidad': len(prendas_detectadas),
+                'prendas': [prenda.to_dict() for prenda in prendas_detectadas]
+            }, status=200)
 
+        except ValueError as e:
+            return JsonResponse({'error': str(e)}, status=400)
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            return JsonResponse({'error': f'Error interno: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
