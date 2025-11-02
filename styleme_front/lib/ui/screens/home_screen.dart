@@ -6,6 +6,7 @@ import 'wardrobe_screen.dart';
 import 'recommendations_screen.dart';
 import 'profile_screen.dart';
 import 'camera_screen.dart';
+import 'saved_outfits_screen.dart';
 
 /// Pantalla principal con Bottom Navigation
 class HomeScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const RecommendationsScreen(),
     const WardrobeScreen(),
     const CameraScreen(),
+    const SavedOutfitsScreen(),
     const ProfileScreen(),
   ];
 
@@ -75,9 +77,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   isCenter: true,
                 ),
                 _buildNavItem(
+                  icon: Icons.favorite,
+                  label: 'Atuendos',
+                  index: 3,
+                ),
+                _buildNavItem(
                   icon: Icons.person,
                   label: 'Perfil',
-                  index: 3,
+                  index: 4,
                 ),
               ],
             ),

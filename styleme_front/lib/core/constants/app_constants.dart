@@ -1,7 +1,10 @@
 /// Constantes de la aplicación
 class AppConstants {
   // API
-  static const String baseUrl = 'http://localhost:8000/api';
+  // IMPORTANTE: Cambiar localhost por tu IP local para usar desde el celular
+  // Tu IP actual: 192.168.0.7
+  // Para obtener tu IP: ejecuta 'ipconfig' en CMD y busca IPv4
+  static const String baseUrl = 'http://192.168.0.7:8000/api';
   static const String detectClothingEndpoint = '/detect-clothing/';
   static const String recommendEndpoint = '/recommend/';
   static const String recommendAIEndpoint = '/recommend-outfit-ai/';

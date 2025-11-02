@@ -9,6 +9,7 @@ import '../ui/screens/wardrobe_screen.dart';
 import '../ui/screens/recommendations_screen.dart';
 import '../ui/screens/profile_screen.dart';
 import '../ui/screens/camera_screen.dart';
+import '../ui/screens/saved_outfits_screen.dart';
 
 /// Rutas de la aplicación
 class AppRoutes {
@@ -22,6 +23,7 @@ class AppRoutes {
   static const String recommendations = '/recommendations';
   static const String profile = '/profile';
   static const String camera = '/camera';
+  static const String savedOutfits = '/saved-outfits';
 
   static Map<String, WidgetBuilder> get routes => {
         splash: (context) => const SplashScreen(),
@@ -34,5 +36,6 @@ class AppRoutes {
         recommendations: (context) => const RecommendationsScreen(),
         profile: (context) => const ProfileScreen(),
         camera: (context) => const CameraScreen(),
+        savedOutfits: (context) => const SavedOutfitsScreen(),
       };
 }

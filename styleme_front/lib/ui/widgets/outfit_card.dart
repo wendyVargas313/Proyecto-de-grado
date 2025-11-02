@@ -7,11 +7,15 @@ import '../../models/user_model.dart';
 class OutfitCard extends StatelessWidget {
   final OutfitModel outfit;
   final VoidCallback? onTap;
+  final bool showDeleteButton;
+  final VoidCallback? onDelete;
 
   const OutfitCard({
     super.key,
     required this.outfit,
     this.onTap,
+    this.showDeleteButton = false,
+    this.onDelete,
   });
 
   @override
@@ -39,22 +43,39 @@ class OutfitCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    outfit.nombre,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                  Expanded(
+                    child: Text(
+                      outfit.nombre,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(
-                      Icons.favorite_border,
-                      color: AppColors.grey,
-                    ),
-                    onPressed: () {
-                      // TODO: Marcar como favorito
-                    },
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (showDeleteButton)
+                        IconButton(
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            color: AppColors.error,
+                          ),
+                          onPressed: onDelete,
+                        ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.favorite_border,
+                          color: AppColors.grey,
+                        ),
+                        onPressed: () {
+                          // TODO: Marcar como favorito
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

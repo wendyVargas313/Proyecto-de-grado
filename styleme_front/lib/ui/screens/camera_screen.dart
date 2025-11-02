@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +23,7 @@ class _CameraScreenState extends State<CameraScreen> {
   final ImagePicker _picker = ImagePicker();
   final ApiService _apiService = ApiService();
   File? _selectedImage;
+  XFile? _selectedXFile;
   bool _isProcessing = false;
   List<ClothingModel>? _detectedClothes;
 
@@ -35,7 +38,10 @@ class _CameraScreenState extends State<CameraScreen> {
 
       if (image != null) {
         setState(() {
-          _selectedImage = File(image.path);
+          _selectedXFile = image;
+          if (!kIsWeb) {
+            _selectedImage = File(image.path);
+          }
           _detectedClothes = null;
         });
       }
@@ -45,7 +51,7 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _detectClothing() async {
-    if (_selectedImage == null) return;
+    if (_selectedXFile == null) return;
 
     final user = context.read<UserProvider>().user;
     if (user == null) {
@@ -56,9 +62,14 @@ class _CameraScreenState extends State<CameraScreen> {
     setState(() => _isProcessing = true);
 
     try {
+      // Convertir XFile a File para la API
+      final File imageFile = kIsWeb 
+          ? File(_selectedXFile!.path) 
+          : _selectedImage!;
+      
       final response = await _apiService.detectClothing(
         email: user.correo,
-        imageFile: _selectedImage!,
+        imageFile: imageFile,
       );
 
       if (response['success'] == true) {
@@ -107,6 +118,7 @@ class _CameraScreenState extends State<CameraScreen> {
   void _reset() {
     setState(() {
       _selectedImage = null;
+      _selectedXFile = null;
       _detectedClothes = null;
     });
   }
@@ -128,7 +140,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ),
         centerTitle: true,
         actions: [
-          if (_selectedImage != null)
+          if (_selectedXFile != null)
             IconButton(
               icon: const Icon(Icons.close, color: Colors.black),
               onPressed: _reset,
@@ -136,7 +148,7 @@ class _CameraScreenState extends State<CameraScreen> {
         ],
       ),
       body: SafeArea(
-        child: _selectedImage == null
+        child: _selectedXFile == null
             ? _buildImageSelection()
             : _buildImagePreview(),
       ),
@@ -210,10 +222,31 @@ class _CameraScreenState extends State<CameraScreen> {
             width: double.infinity,
             height: 400,
             color: Colors.black,
-            child: Image.file(
-              _selectedImage!,
-              fit: BoxFit.contain,
-            ),
+            child: kIsWeb
+                ? Image.network(
+                    _selectedXFile!.path,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return FutureBuilder<Uint8List>(
+                        future: _selectedXFile!.readAsBytes(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Image.memory(
+                              snapshot.data!,
+                              fit: BoxFit.contain,
+                            );
+                          }
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      );
+                    },
+                  )
+                : Image.file(
+                    _selectedImage!,
+                    fit: BoxFit.contain,
+                  ),
           ),
 
           const SizedBox(height: 24),

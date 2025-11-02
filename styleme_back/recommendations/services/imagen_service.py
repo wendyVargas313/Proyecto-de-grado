@@ -15,8 +15,8 @@ class ImagenService:
     # Constantes de validación según criterios de aceptación
     MAX_FILE_SIZE_MB = 10
     MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024  # 10 MB en bytes
-    ALLOWED_FORMATS = ['jpg', 'jpeg', 'png']
-    ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png']
+    ALLOWED_FORMATS = ['jpg', 'jpeg', 'png', 'webp']
+    ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
     def __init__(self):
         self.user_repository = UserRepository()
