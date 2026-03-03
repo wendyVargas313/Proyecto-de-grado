@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "StyleMe API",
+    "description": "Colección de endpoints para probar el backend de StyleMe",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Detectar Prendas - Una Imagen",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "email",
+              "value": "test@example.com",
+              "type": "text"
+            },
+            {
+              "key": "image",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/detect-clothing/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "detect-clothing", ""]
+        },
+        "description": "Sube una imagen y detecta prendas automáticamente con YOLO"
+      }
+    },
+    {
+      "name": "2. Detectar Prendas - Múltiples Imágenes",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "email",
+              "value": "test@example.com",
+              "type": "text"
+            },
+            {
+              "key": "images",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "images",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "images",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/detect-clothing/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "detect-clothing", ""]
+        },
+        "description": "Sube múltiples imágenes a la vez"
+      }
+    },
+    {
+      "name": "3. Generar Recomendaciones de Outfits",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/recommend/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "recommend", ""]
+        },
+        "description": "Genera recomendaciones de outfits basadas en el guardarropa del usuario"
+      }
+    },
+    {
+      "name": "4. Predecir con IA (KMeans)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tipo_camiseta\": 1,\n  \"tipo_jeans\": 1,\n  \"color_azul\": 1,\n  \"temporada_verano\": 1\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/recommend-outfit-ai/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "recommend-outfit-ai", ""]
+        },
+        "description": "Predice el grupo de outfit usando el modelo KMeans"
+      }
+    },
+    {
+      "name": "5. Obtener Imagen",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/images/{{image_id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "images", "{{image_id}}"]
+        },
+        "description": "Obtiene una imagen desde GridFS. Reemplaza {{image_id}} con el ID real"
+      }
+    },
+    {
+      "name": "6. Obtener Metadata de Imagen",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/images/{{image_id}}/metadata",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "images", "{{image_id}}", "metadata"]
+        },
+        "description": "Obtiene la metadata de una imagen. Reemplaza {{image_id}} con el ID real"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "image_id",
+      "value": "670abc123def456789",
+      "type": "string"
+    }
+  ]
+}
