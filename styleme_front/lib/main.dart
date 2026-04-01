@@ -8,9 +8,9 @@ import 'routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await StorageService.init();
   
   // Inicializar servicios
-  await StorageService.init();
   
   runApp(const StyleMeApp());
 }

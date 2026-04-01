@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_text_styles.dart';
-import '../../providers/user_provider.dart';
-import '../../models/user_model.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/custom_button.dart';
+import '../../services/auth_service.dart';
 
-/// Pantalla de Login
+/// Pantalla de login con funcionalidad de olvidé mi contraseña
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -20,6 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -28,29 +23,29 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  /// Maneja el proceso de login
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      // SimulaciÃ³n de login (en producciÃ³n, validar con backend)
-      await Future.delayed(const Duration(seconds: 1));
-
-      // Crear usuario temporal
-      final user = UserModel(
-        nombre: 'Usuario',
-        correo: _emailController.text.trim(),
+      final authService = AuthService();
+      await authService.login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
       );
 
       if (mounted) {
-        await context.read<UserProvider>().saveUser(user);
-        Navigator.pushReplacementNamed(context, '/configure-profile');
+        Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -60,140 +55,210 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  /// Muestra el diálogo de olvidé mi contraseña
+  void _showForgotPasswordDialog() {
+    final resetEmailController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Recuperar contraseña'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Ingresa tu correo electrónico y te enviaremos instrucciones para recuperar tu contraseña.',
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: resetEmailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(
+                labelText: 'Correo electrónico',
+                border: OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor ingresa tu correo';
+                }
+                if (!value.contains('@')) {
+                  return 'Ingresa un correo válido';
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (resetEmailController.text.isNotEmpty && 
+                  resetEmailController.text.contains('@')) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Si el correo existe, recibirás instrucciones en breve.'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            },
+            child: const Text('Enviar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.authGradient,
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 40),
-
-                  // Logo
-                  const Text(
-                    'STYLEME',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 2,
-                    ),
-                    textAlign: TextAlign.center,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Spacer(flex: 2),
+                
+                // Logo y título
+                Icon(
+                  Icons.style,
+                  size: 80,
+                  color: Colors.blue[600],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Bienvenido',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
                   ),
-
-                  const SizedBox(height: 60),
-
-                  // TÃ­tulo
-                  const Text(
-                    'Inicia sesiÃ³n',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  textAlign: TextAlign.center,
+                ),
+                const Text(
+                  'Inicia sesión para continuar',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
                   ),
-
-                  const SizedBox(height: 40),
-
-                  // Email
-                  CustomTextField(
-                    controller: _emailController,
-                    label: 'Correo',
-                    prefixIcon: Icons.email_outlined,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Ingresa tu correo';
-                      }
-                      if (!value.contains('@')) {
-                        return 'Correo invÃ¡lido';
-                      }
-                      return null;
-                    },
+                  textAlign: TextAlign.center,
+                ),
+                
+                const Spacer(flex: 1),
+                
+                // Campo de email
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Correo electrónico',
+                    prefixIcon: Icon(Icons.email),
+                    border: OutlineInputBorder(),
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // Password
-                  CustomTextField(
-                    controller: _passwordController,
-                    label: 'ContraseÃ±a',
-                    prefixIcon: Icons.lock_outline,
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Ingresa tu contraseÃ±a';
-                      }
-                      if (value.length < 6) {
-                        return 'MÃ­nimo 6 caracteres';
-                      }
-                      return null;
-                    },
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  // OlvidÃ© mi contraseÃ±a
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa tu correo';
+                    }
+                    if (!value.contains('@')) {
+                      return 'Ingresa un correo válido';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                
+                // Campo de contraseña
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  decoration: InputDecoration(
+                    labelText: 'Contraseña',
+                    prefixIcon: const Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      ),
                       onPressed: () {
-                        // TODO: Implementar recuperaciÃ³n de contraseÃ±a
+                        setState(() => _obscurePassword = !_obscurePassword);
                       },
-                      child: const Text(
-                        'Â¿Olvidaste tu contraseÃ±a?',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
+                    ),
+                    border: const OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor ingresa tu contraseña';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+                
+                // Botón de olvidé mi contraseña
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: _showForgotPasswordDialog,
+                    child: Text(
+                      '¿Olvidaste tu contraseña?',
+                      style: TextStyle(color: Colors.blue[600]),
                     ),
                   ),
-
-                  const SizedBox(height: 30),
-
-                  // BotÃ³n Login
-                  CustomButton(
-                    text: 'Iniciar sesiÃ³n',
-                    onPressed: _isLoading ? null : _handleLogin,
-                    isLoading: _isLoading,
+                ),
+                const SizedBox(height: 24),
+                
+                // Botón de login
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _handleLogin,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[600],
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-
-                  const SizedBox(height: 30),
-
-                  // Registro
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Â¿No tienes cuenta? ',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/register');
-                        },
-                        child: const Text(
-                          'RegÃ­strate',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
+                        )
+                      : const Text(
+                          'Iniciar Sesión',
+                          style: TextStyle(fontSize: 16),
                         ),
+                ),
+                const SizedBox(height: 16),
+                
+                // Link para registro
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('¿No tienes cuenta?'),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/register');
+                      },
+                      child: Text(
+                        'Regístrate',
+                        style: TextStyle(color: Colors.blue[600]),
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+                
+                const Spacer(flex: 2),
+              ],
             ),
           ),
         ),
