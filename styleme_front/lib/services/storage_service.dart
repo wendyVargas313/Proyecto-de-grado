@@ -65,6 +65,11 @@ class StorageService {
     return val == 'true';
   }
 
+
+  static Future<bool> isLoggedIn() async {
+    final token = await getToken();
+    return token != null && token.isNotEmpty;
+  }
   static Future<void> setLoggedIn(bool value) async {
     if (!value) await logout();
   }

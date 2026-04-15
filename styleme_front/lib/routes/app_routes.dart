@@ -11,7 +11,7 @@ import '../ui/screens/profile_screen.dart';
 import '../ui/screens/camera_screen.dart';
 import '../ui/screens/saved_outfits_screen.dart';
 
-/// Rutas de la aplicación
+/// Rutas de la aplicacion
 class AppRoutes {
   static const String splash = '/';
   static const String onboarding = '/onboarding';

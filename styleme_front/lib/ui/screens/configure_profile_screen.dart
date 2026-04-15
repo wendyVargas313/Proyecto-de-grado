@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_text_styles.dart';
 import '../../core/constants/app_constants.dart';
@@ -38,7 +37,7 @@ class _ConfigureProfileScreenState extends State<ConfigureProfileScreen> {
 
   Future<void> _finishConfiguration() async {
     final userProvider = context.read<UserProvider>();
-    
+
     userProvider.updatePreferences(
       types: _selectedTypes,
       colors: _selectedColors,
@@ -82,18 +81,13 @@ class _ConfigureProfileScreenState extends State<ConfigureProfileScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Progress Indicator
             _buildProgressIndicator(),
-
-            // Content
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
                 child: _buildStepContent(),
               ),
             ),
-
-            // Button
             Padding(
               padding: const EdgeInsets.all(24),
               child: CustomButton(
@@ -152,7 +146,6 @@ class _ConfigureProfileScreenState extends State<ConfigureProfileScreen> {
     }
   }
 
-  // Paso 1: Tipos de prenda
   Widget _buildStep1() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +180,6 @@ class _ConfigureProfileScreenState extends State<ConfigureProfileScreen> {
     );
   }
 
-  // Paso 2: Colores
   Widget _buildStep2() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,7 +215,6 @@ class _ConfigureProfileScreenState extends State<ConfigureProfileScreen> {
     );
   }
 
-  // Paso 3: Temporadas
   Widget _buildStep3() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -79,19 +79,12 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
               message: 'Tu guardarropa está vacío',
               description: 'Agrega prendas usando la cámara',
               actionText: 'Agregar prenda',
-              onAction: () {
-                // Cambiar a tab de cámara
-                final homeState = context.findAncestorStateOfType<State>();
-                if (homeState != null && homeState.mounted) {
-                  // Navegar a cámara
-                }
-              },
+              onAction: () {},
             );
           }
 
           return Column(
             children: [
-              // Filtros activos
               if (wardrobeProvider.hasFilters)
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -135,7 +128,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
                   ),
                 ),
 
-              // Grid de prendas
               Expanded(
                 child: GridView.builder(
                   padding: const EdgeInsets.all(16),
@@ -226,7 +218,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Tipo
               const Text(
                 'Tipo de prenda',
                 style: TextStyle(fontWeight: FontWeight.w600),
@@ -253,7 +244,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
 
               const SizedBox(height: 20),
 
-              // Color
               const Text(
                 'Color',
                 style: TextStyle(fontWeight: FontWeight.w600),
@@ -280,7 +270,6 @@ class _WardrobeScreenState extends State<WardrobeScreen> {
 
               const SizedBox(height: 20),
 
-              // Temporada
               const Text(
                 'Temporada',
                 style: TextStyle(fontWeight: FontWeight.w600),

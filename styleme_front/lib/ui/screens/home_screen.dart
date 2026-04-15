@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Cargar usuario al iniciar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserProvider>().loadUser();
     });
@@ -119,8 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          child: Icon(
-            icon,
+          child: const Icon(
+            Icons.camera_alt,
             color: Colors.white,
             size: 28,
           ),

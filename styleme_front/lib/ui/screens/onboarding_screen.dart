@@ -62,7 +62,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Skip button
             if (_currentPage < _pages.length - 1)
               Align(
                 alignment: Alignment.topRight,
@@ -80,7 +79,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             else
               const SizedBox(height: 48),
 
-            // Pages
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -92,7 +90,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // Page indicator
             SmoothPageIndicator(
               controller: _pageController,
               count: _pages.length,
@@ -107,7 +104,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
             const SizedBox(height: 40),
 
-            // Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: SizedBox(
@@ -150,7 +146,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon
           Container(
             width: 150,
             height: 150,
@@ -167,7 +162,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
           const SizedBox(height: 60),
 
-          // Title
           Text(
             page.title,
             style: AppTextStyles.h2Dark,
@@ -176,7 +170,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
           const SizedBox(height: 20),
 
-          // Description
           Text(
             page.description,
             style: AppTextStyles.body.copyWith(

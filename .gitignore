@@ -74,3 +74,11 @@ htmlcov/
 # Models (opcional, si son muy grandes)
 # recommendations/ia/models/*.pt
 # recommendations/ia/models/*.pkl
+
+# Documentation files (non-essential)
+*.md
+!README.md
+
+# Batch scripts
+*.bat
+!**/gradlew.bat

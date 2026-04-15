@@ -62,11 +62,10 @@ class _CameraScreenState extends State<CameraScreen> {
     setState(() => _isProcessing = true);
 
     try {
-      // Convertir XFile a File para la API
-      final File imageFile = kIsWeb 
-          ? File(_selectedXFile!.path) 
+      final File imageFile = kIsWeb
+          ? File(_selectedXFile!.path)
           : _selectedImage!;
-      
+
       final response = await _apiService.detectClothing(
         email: user.correo,
         imageFile: imageFile,
@@ -81,7 +80,6 @@ class _CameraScreenState extends State<CameraScreen> {
           _detectedClothes = prendas;
         });
 
-        // Agregar al guardarropa del usuario
         if (mounted) {
           context.read<UserProvider>().addMultipleClothing(prendas);
         }
@@ -217,7 +215,6 @@ class _CameraScreenState extends State<CameraScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Imagen
           Container(
             width: double.infinity,
             height: 400,
@@ -251,7 +248,6 @@ class _CameraScreenState extends State<CameraScreen> {
 
           const SizedBox(height: 24),
 
-          // Resultados de detección
           if (_detectedClothes != null) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -344,7 +340,6 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ] else ...[
-            // Botón de detección
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(

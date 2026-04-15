@@ -52,7 +52,6 @@ class SavedOutfitsScreen extends StatelessWidget {
         description: 'Genera y guarda tus combinaciones favoritas',
         actionText: 'Generar atuendos',
         onAction: () {
-          // Navegar a la pantalla de recomendaciones
           DefaultTabController.of(context)?.animateTo(0);
         },
       );
@@ -61,7 +60,6 @@ class SavedOutfitsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Contador
         Padding(
           padding: const EdgeInsets.all(24),
           child: Row(
@@ -116,7 +114,6 @@ class SavedOutfitsScreen extends StatelessWidget {
           ),
         ),
 
-        // Grid de outfits
         Expanded(
           child: GridView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -277,7 +274,6 @@ class SavedOutfitsScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              // TODO: Eliminar outfit del provider
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -312,7 +308,6 @@ class SavedOutfitsScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              // TODO: Eliminar todos los outfits
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -357,7 +352,6 @@ class SavedOutfitsScreen extends StatelessWidget {
               title: const Text('Más recientes'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Ordenar por fecha
               },
             ),
             ListTile(
@@ -365,7 +359,6 @@ class SavedOutfitsScreen extends StatelessWidget {
               title: const Text('Favoritos'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Ordenar por favoritos
               },
             ),
             ListTile(
@@ -373,7 +366,6 @@ class SavedOutfitsScreen extends StatelessWidget {
               title: const Text('Nombre'),
               onTap: () {
                 Navigator.pop(context);
-                // TODO: Ordenar por nombre
               },
             ),
           ],

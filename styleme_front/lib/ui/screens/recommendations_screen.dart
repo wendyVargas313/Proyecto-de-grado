@@ -34,12 +34,10 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     final user = context.read<UserProvider>().user;
     if (user == null) return;
 
-    // Cargar outfits guardados
     setState(() {
       _outfits = user.outfitsGenerados;
     });
 
-    // Si no hay outfits, generar automáticamente
     if (_outfits.isEmpty && user.guardarropa.isNotEmpty) {
       _generateOutfits();
     }
@@ -65,7 +63,6 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
           _outfits = outfits;
         });
 
-        // Guardar en el provider
         if (mounted) {
           for (var outfit in outfits) {
             context.read<UserProvider>().addOutfit(outfit);
@@ -144,9 +141,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
         message: 'Agrega prendas primero',
         description: 'Necesitas prendas en tu guardarropa para generar outfits',
         actionText: 'Agregar prendas',
-        onAction: () {
-          // Cambiar a tab de cámara
-        },
+        onAction: () {},
       );
     }
 
@@ -163,7 +158,6 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Saludo
         Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -189,7 +183,6 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
           ),
         ),
 
-        // Outfits
         if (_isLoading)
           const Expanded(
             child: Center(
@@ -204,7 +197,6 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
           Expanded(
             child: Column(
               children: [
-                // Carrusel de outfits
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
@@ -226,7 +218,6 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                   ),
                 ),
 
-                // Indicador de página
                 if (_outfits.length > 1)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -248,7 +239,6 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                     ),
                   ),
 
-                // Botón generar nuevo
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: CustomButton(
